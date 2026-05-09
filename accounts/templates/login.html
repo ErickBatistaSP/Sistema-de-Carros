@@ -1,13 +1,227 @@
 {% extends 'base.html' %}
-
+{% block title %}Login{% endblock %}
 {% block content %}
-<form method="post">
-  {% csrf_token %}
 
-  <table>
-    {{ login_form.as_table }}
-  </table>
+<style>
+  .login-wrapper {
+    min-height: calc(100vh - var(--nav-height) - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+  }
 
-  <input type="submit" value="Entrar">
-</form>
+  .login-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px 40px;
+    box-shadow:
+      0 0 0 1px rgba(10,132,200,0.08),
+      0 32px 64px rgba(0,0,0,0.4),
+      0 0 80px rgba(10,132,200,0.06);
+    animation: cardIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+  }
+
+  .login-header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .login-icon {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 24px rgba(10,132,200,0.3);
+  }
+
+  .login-icon svg {
+    width: 26px;
+    height: 26px;
+    fill: #fff;
+  }
+
+  .login-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .login-header p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+
+  /* ── form table override ── */
+  .login-card table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .login-card table tr {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .login-card table tr th,
+  .login-card table tr td {
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: none;
+    padding: 0;
+  }
+
+  .login-card table tr th {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+
+  .login-card table tr td label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .login-card input[type="text"],
+  .login-card input[type="password"],
+  .login-card input[type="email"] {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+
+  .login-card input[type="text"]:focus,
+  .login-card input[type="password"]:focus,
+  .login-card input[type="email"]:focus {
+    border-color: var(--primary);
+    background: rgba(10,132,200,0.06);
+    box-shadow: 0 0 0 3px rgba(10,132,200,0.15);
+  }
+
+  .login-card input[type="text"]::placeholder,
+  .login-card input[type="password"]::placeholder {
+    color: rgba(136,144,164,0.5);
+  }
+
+  /* erros inline do Django */
+  .login-card .errorlist {
+    list-style: none;
+    margin-top: 6px;
+  }
+
+  .login-card .errorlist li {
+    font-size: 0.8rem;
+    color: #f87171;
+    background: rgba(248,113,113,0.08);
+    border: 1px solid rgba(248,113,113,0.2);
+    border-radius: 6px;
+    padding: 5px 10px;
+  }
+
+  /* botão submit */
+  .login-card input[type="submit"] {
+    width: 100%;
+    margin-top: 8px;
+    padding: 13px;
+    background: var(--primary);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 16px rgba(10,132,200,0.3);
+  }
+
+  .login-card input[type="submit"]:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(10,132,200,0.4);
+  }
+
+  .login-card input[type="submit"]:active {
+    transform: translateY(0);
+  }
+
+  .login-footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .login-footer a {
+    color: var(--primary-light);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+
+  .login-footer a:hover {
+    color: #fff;
+  }
+</style>
+
+<div class="login-wrapper">
+  <div class="login-card">
+
+    <div class="login-header">
+      <div class="login-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12Zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8Z"/>
+        </svg>
+      </div>
+      <h1>Bem-vindo de volta</h1>
+      <p>Entre com sua conta para continuar</p>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <table>
+        {{ login_form.as_table }}
+      </table>
+      <input type="submit" value="Entrar">
+    </form>
+
+    <div class="login-footer">
+      Ainda não tem conta? <a href="{% url 'register' %}">Cadastre-se</a>
+    </div>
+
+  </div>
+</div>
+
 {% endblock %}

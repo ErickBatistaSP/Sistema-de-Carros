@@ -4,87 +4,256 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary: #0a84c8;
+      --primary-dark: #006fa8;
+      --primary-light: #38b6f0;
+      --accent: #f0a500;
+      --bg: #0d0f14;
+      --bg-card: #13161e;
+      --bg-nav: rgba(10, 12, 18, 0.92);
+      --text: #e8eaf0;
+      --text-muted: #8890a4;
+      --border: rgba(255,255,255,0.07);
+      --nav-height: 68px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-        font-family: 'Open Sans', sans-serif;
-        background-color: #f7f7f7;
-        color: #333;
-        margin: 0;
-        padding: 0;
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(10,132,200,0.18) 0%, transparent 70%);
     }
 
+    /* ─── NAV ─── */
     header {
-        background-color: #0096c7;
-        color: #fff;
-        text-align: center;
-    }
-
-    footer {
-        background-color: #ccc;
-        color: #333;
-        padding: 20px;
-        text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: var(--bg-nav);
+      border-bottom: 1px solid var(--border);
     }
 
     nav {
-        background-color: #0096c7;
-        color: #fff;
-        height: 50px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      height: var(--nav-height);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 28px;
+      gap: 24px;
+    }
+
+    .nav-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.55rem;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .nav-brand span {
+      color: var(--primary);
+    }
+
+    .nav-brand svg {
+      width: 26px;
+      height: 26px;
+      fill: var(--accent);
     }
 
     nav ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 2px;
     }
 
     nav ul li {
-        margin: 0 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-greeting {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      letter-spacing: 0.02em;
     }
 
     nav ul li a {
-        color: #fff;
-        text-decoration: none;
-        font-size: 16px;
-        padding: 15px;
-        transition: all 0.3s ease;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 7px 14px;
+      border-radius: 8px;
+      transition: color 0.2s, background 0.2s;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
     }
 
     nav ul li a:hover {
-        background-color: #32bbe8;
+      color: var(--text);
+      background: rgba(255,255,255,0.07);
     }
 
-    nav ul li.active a {
-        background-color: #666;
+    /* Carros link — destaque sutil */
+    .nav-cars a {
+      color: var(--primary-light);
+    }
+    .nav-cars a:hover {
+      color: #fff;
+      background: rgba(10,132,200,0.14);
     }
 
-    nav ul li.active a:hover {
-        background-color: #999;
+    /* Cadastrar carros — CTA */
+    .nav-cta a {
+      background: var(--primary);
+      color: #fff !important;
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.15s;
     }
 
+    .nav-cta a:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    /* Sair / Login / Cadastre-se */
+    .nav-auth a {
+      border: 1px solid var(--border);
+    }
+
+    .nav-auth a:hover {
+      border-color: rgba(255,255,255,0.18);
+    }
+
+    /* ─── MAIN ─── */
+    main {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 40px 28px;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 28px;
+      text-align: center;
+    }
+
+    footer p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      letter-spacing: 0.03em;
+    }
+
+    footer p strong {
+      color: var(--primary-light);
+      font-weight: 600;
+    }
+
+    /* ─── RESPONSIVO ─── */
+    @media (max-width: 680px) {
+      nav {
+        padding: 0 16px;
+        flex-wrap: wrap;
+        height: auto;
+        padding-block: 12px;
+        gap: 10px;
+      }
+
+      nav ul {
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+
+      nav ul li a,
+      .nav-cta a {
+        font-size: 0.82rem;
+        padding: 6px 10px;
+      }
+
+      main {
+        padding: 28px 16px;
+      }
+    }
   </style>
 </head>
 <body>
   <header>
     <nav>
+      <a href="{% url 'cars_list' %}" class="nav-brand">
+        <!-- ícone de carro simples em SVG inline -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18.92 6.01A1 1 0 0 0 18 5.5H6a1 1 0 0 0-.92.61l-2 5A1 1 0 0 0 3 12v4a1 1 0 0 0 1 1h1a2 2 0 0 0 4 0h6a2 2 0 0 0 4 0h1a1 1 0 0 0 1-1v-4a1 1 0 0 0-.08-.39l-2-5.6ZM6.76 7.5h10.48l1.43 4H5.33l1.43-4ZM7 17a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm10 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+        </svg>
+        Sistema<span>Carros</span>
+      </a>
+
       <ul>
         {% if user.is_authenticated %}
-        <li>Ola, {{ user.username }}</li>
-        <li><a href="{% url 'new_car' %}">Cadastrar carros</a></li>
+        <li>
+          <span class="nav-greeting">Olá, {{ user.username }}</span>
+        </li>
+        <li class="nav-cta">
+          <a href="{% url 'new_car' %}">+ Cadastrar carro</a>
+        </li>
         {% endif %}
-    
+
         {% if not user.is_authenticated %}
-        <li><a href="{% url 'register' %}">Cadastre-se</a></li>
-        <li><a href="{% url 'login' %}">Login</a></li>
+        <li class="nav-auth">
+          <a href="{% url 'register' %}">Cadastre-se</a>
+        </li>
+        <li class="nav-auth">
+          <a href="{% url 'login' %}">Login</a>
+        </li>
         {% endif %}
-        <li><a href="{% url 'cars_list' %}">Carros</a></li>
-       
+
+        <li class="nav-cars">
+          <a href="{% url 'cars_list' %}">Carros</a>
+        </li>
+
         {% if user.is_authenticated %}
-        <li><a href="{% url 'logout' %}">Sair</a></li>
+        <li class="nav-auth">
+          <a href="{% url 'logout' %}">Sair</a>
+        </li>
         {% endif %}
       </ul>
     </nav>
@@ -96,7 +265,7 @@
   </main>
 
   <footer>
-    <p>&copy; 2023 PycodeBR Multimarcas</p>
+    <p>&copy; 2026 <strong>Erick Batista</strong> — Todos os direitos reservados</p>
   </footer>
 </body>
 </html>

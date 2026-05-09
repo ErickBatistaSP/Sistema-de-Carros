@@ -1,16 +1,296 @@
 {% extends 'base.html' %}
-
+{% block title %}Cadastrar Carro{% endblock %}
 {% block content %}
 
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+<style>
+  .newcar-wrapper {
+    max-width: 680px;
+    margin: 48px auto;
+    padding: 0 16px 48px;
+    animation: cardIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
 
-    <table>
-      {{ form.as_table }}
-    </table>
-    
-    <input type="submit" value="Cadastrar" class="btn btn-primary">
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+  }
 
-  </form>
+  .newcar-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(240,165,0,0.06),
+      0 24px 56px rgba(0,0,0,0.4);
+  }
+
+  /* ── header ── */
+  .newcar-header {
+    background: linear-gradient(135deg, rgba(240,165,0,0.13), rgba(240,165,0,0.04));
+    border-bottom: 1px solid rgba(240,165,0,0.12);
+    padding: 32px 40px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .newcar-header-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--accent), #c98a00);
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 6px 20px rgba(240,165,0,0.28);
+  }
+
+  .newcar-header-icon svg {
+    width: 24px;
+    height: 24px;
+    fill: #fff;
+  }
+
+  .newcar-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.9rem;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    margin: 0;
+    line-height: 1;
+  }
+
+  .newcar-header p {
+    font-size: 0.83rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* ── body ── */
+  .newcar-body {
+    padding: 36px 40px 40px;
+  }
+
+  /* ── divisor ── */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 24px;
+  }
+
+  .section-divider span {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #f0c040;
+    white-space: nowrap;
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── table override ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  table tr {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  table tr th,
+  table tr td {
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: none;
+    padding: 0;
+    background: none;
+  }
+
+  table tr th {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 8px;
+  }
+
+  table tr td label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  /* inputs */
+  input[type="text"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    max-width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 15px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.93rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    box-sizing: border-box;
+  }
+
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--accent);
+    background: rgba(240,165,0,0.05);
+    box-shadow: 0 0 0 3px rgba(240,165,0,0.13);
+  }
+
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%238890a4'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  select option {
+    background: #13161e;
+    color: var(--text);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 90px;
+  }
+
+  input[type="file"] {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  input[type="file"]::file-selector-button {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    padding: 6px 12px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background 0.2s;
+  }
+
+  input[type="file"]::file-selector-button:hover {
+    background: rgba(255,255,255,0.1);
+  }
+
+  /* erros Django */
+  .errorlist {
+    list-style: none;
+    margin-bottom: 8px;
+  }
+
+  .errorlist li {
+    font-size: 0.8rem;
+    color: #f87171;
+    background: rgba(248,113,113,0.08);
+    border: 1px solid rgba(248,113,113,0.2);
+    border-radius: 6px;
+    padding: 5px 10px;
+  }
+
+  /* ── botão ── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 10px;
+    padding: 13px 22px;
+    background: var(--accent);
+    color: #0d0f14;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 16px rgba(240,165,0,0.28);
+  }
+
+  .btn-primary:hover {
+    background: #d49300;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(240,165,0,0.38);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 560px) {
+    .newcar-header,
+    .newcar-body { padding-inline: 22px; }
+  }
+</style>
+
+<div class="newcar-wrapper">
+  <div class="newcar-card">
+
+    <div class="newcar-header">
+      <div class="newcar-header-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18.92 6.01A1 1 0 0 0 18 5.5H6a1 1 0 0 0-.92.61l-2 5A1 1 0 0 0 3 12v4a1 1 0 0 0 1 1h1a2 2 0 0 0 4 0h6a2 2 0 0 0 4 0h1a1 1 0 0 0 1-1v-4a1 1 0 0 0-.08-.39l-2-5.6ZM6.76 7.5h10.48l1.43 4H5.33l1.43-4ZM7 17a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm10 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Cadastrar Carro</h1>
+        <p>Preencha os dados do novo veículo</p>
+      </div>
+    </div>
+
+    <div class="newcar-body">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="section-divider"><span>Dados do veículo</span></div>
+
+        <table>
+          {{ form.as_table }}
+        </table>
+
+        <input type="submit" value="Cadastrar Carro" class="btn btn-primary">
+      </form>
+    </div>
+
+  </div>
+</div>
 
 {% endblock %}
