@@ -101,6 +101,7 @@
   /* ── table override ── */
   table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
   }
 
@@ -114,10 +115,13 @@
   table tr td {
     display: block;
     width: 100%;
+    max-width: 100%;
+    overflow: hidden;
     text-align: left;
     border: none;
     padding: 0;
     background: none;
+    box-sizing: border-box;
   }
 
   table tr th {
