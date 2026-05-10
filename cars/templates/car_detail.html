@@ -239,7 +239,7 @@
         </div>
       {% endif %}
 
-      <div class="price-badge">R$ {{ object.value }}</div>
+      <div class="price-badge">R$ {{ object.value|floatformat:"2g" }}</div>
     </div>
 
     <div class="car-card-body">

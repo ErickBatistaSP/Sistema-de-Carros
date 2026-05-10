@@ -277,7 +277,7 @@
                 Sem foto
               </div>
             {% endif %}
-            <div class="price-badge">R$ {{ car.value }}</div>
+            <div class="price-badge">R$ {{ car.value|floatformat:"2g" }}</div>
           </div>
           <div class="car-card-info">
             <h2>{{ car.brand }} {{ car.model }}</h2>
